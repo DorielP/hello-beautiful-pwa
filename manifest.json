@@ -1,0 +1,20 @@
+{
+  "name": "Hello Beautiful",
+  "short_name": "Hello",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#afcfaf",
+  "theme_color": "#000069",
+  "icons": [
+    {
+      "src": "icon.jpeg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "icon.jpeg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}
