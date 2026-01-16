@@ -5,6 +5,8 @@ const filesToCache = [
   "./taz.gif",
   "./manifest.json",
   "./style.css"  // optional if you move CSS to separate file
+   "/NeverTooMuch.mp3"
+
 ];
 
 self.addEventListener("install", (e) => {

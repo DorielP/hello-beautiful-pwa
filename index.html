@@ -72,6 +72,20 @@
     margin-top: 0;
   }
 
+h3 {
+	font-family: "Fredoka", sans-serif;
+    margin-top: 0;
+  }
+
+.button.music {
+  background-color: #000069;
+  color: #afcfaf;
+}
+
+.button.music:hover {
+  background-color: #333366;
+}
+
   .button {
 	font-family: "Fredoka", sans-serif;
     display: inline-block;
@@ -155,13 +169,25 @@
     Hello Sweetheart 🩵
   </h1>
 
-  <h2>I made you a little thing. Just because ʕᵔᴥᵔʔ</h2>
+  <h2>I made you a little thing. Because I'm in love with you ʕᵔᴥᵔʔ</h2>
 
   <p id="compliment" style="font-size:1.2em;"></p>
 
   <button class="button" onclick="revealMessage()">Click for a secret message ✨</button>
 
   <p class="click-message" id="surprise"></p>
+<p></p>
+
+<audio id="bg-music" preload="auto">
+  <source src="NeverTooMuch.mp3" type="audio/mpeg">
+  Your browser does not support audio.
+</audio>
+
+<button class="button music" onclick="toggleMusic()">
+  A song that makes me think of you
+</button>
+
+
 
   <div class="footer">
     I hope you can come back to this and smile anytime💚
@@ -319,6 +345,20 @@ function launchConfetti() {
   }
 }
 
+const music = document.getElementById("bg-music");
+let isPlaying = false;
+
+function toggleMusic() {
+  if (!isPlaying) {
+    music.play();
+    isPlaying = true;
+    event.target.textContent = "Pause music";
+  } else {
+    music.pause();
+    isPlaying = false;
+    event.target.textContent = "A song that makes me think of you";
+  }
+}
 
 
 </script>
