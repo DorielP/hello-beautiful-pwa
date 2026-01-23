@@ -926,13 +926,6 @@ function enableLongPress(cell, input, notes) {
 }, 450);
   });
 
-cell.addEventListener("click", () => {
-  if (notesMode) {
-    notesMode = false;
-    showToast("✏️ Notes mode OFF");
-  }
-  input.focus();
-});
 
   cell.addEventListener("touchend", () => {
   clearTimeout(pressTimer);
