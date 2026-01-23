@@ -920,15 +920,23 @@ function enableLongPress(cell, input, notes) {
   cell.addEventListener("touchstart", () => {
     if (input.disabled) return;
     pressTimer = setTimeout(() => {
-      notesMode = true;
-      navigator.vibrate?.(20);
-    }, 450);
+  notesMode = true;
+  navigator.vibrate?.(20);
+  showToast("✏️ Notes mode ON");
+}, 450);
   });
 
-  cell.addEventListener("touchend", () => {
-    clearTimeout(pressTimer);
+cell.addEventListener("click", () => {
+  if (notesMode) {
     notesMode = false;
-  });
+    showToast("✏️ Notes mode OFF");
+  }
+  input.focus();
+});
+
+  cell.addEventListener("touchend", () => {
+  clearTimeout(pressTimer);
+});
 
   cell.addEventListener("touchmove", () => {
     clearTimeout(pressTimer);
