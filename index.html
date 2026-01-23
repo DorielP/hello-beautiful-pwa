@@ -120,6 +120,186 @@ h3 {
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
   backdrop-filter: blur(6px);
 	}
+	
+#sudoku {
+  margin-top: 40px;
+  text-align: center;
+}
+
+.difficulty {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 12px 0 18px;
+}
+
+.diff-btn {
+  font-family: "Fredoka", sans-serif;
+  background: #afcfaf;
+  color: #000069;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 16px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.diff-btn:hover {
+  background: #8fbc8f;
+  transform: scale(1.05);
+}
+
+/* CENTER WRAPPER */
+.sudoku-wrapper {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+/* GRID */
+.sudoku-grid {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  grid-template-rows: repeat(9, 1fr);
+
+  width: 360px;
+  height: 360px;
+
+  margin: 20px auto;
+  border: none;
+  background: white;
+}
+
+/* CELLS */
+.sudoku-cell {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+
+  border: 1px solid #000069;
+  text-align: center;
+
+  font-size: 1.4em;
+  font-weight: 600;
+  font-family: "Fredoka", sans-serif;
+
+  padding: 0;
+  margin: 0;
+
+  background: white;
+  color: #000069;
+
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  border-radius: 0;
+}
+/* OUTER BORDER */
+.sudoku-cell:nth-child(-n+9) {
+  border-top-width: 3px;
+}
+
+.sudoku-cell:nth-child(9n+1) {
+  border-left-width: 3px;
+}
+
+.sudoku-cell:nth-child(9n) {
+  border-right-width: 3px;
+}
+
+.sudoku-cell:nth-child(n+73) {
+  border-bottom-width: 3px;
+}
+
+/* 3×3 BLOCKS */
+.sudoku-cell:nth-child(3n) {
+  border-right-width: 3px;
+}
+
+.sudoku-cell:nth-child(n+19):nth-child(-n+27),
+.sudoku-cell:nth-child(n+46):nth-child(-n+54) {
+  border-bottom-width: 3px;
+}
+.sudoku-cell.conflict input {
+  background: #ffdede;
+  color: #8b0000;
+}
+
+.sudoku-cell.correct input {
+  color: #1e7f43;
+}
+
+.sudoku-cell.incorrect input {
+  color: #b03030;
+}
+
+/* MOBILE */
+@media (max-width: 420px) {
+  .sudoku-grid {
+    width: 90vw;
+    height: 90vw;
+  }
+}
+@media (max-width: 420px) {
+  .notes {
+    font-size: 0.6em;
+  }
+}
+
+.sudoku-cell {
+  position: relative;
+}
+
+.notes {
+  position: absolute;
+  inset: 2px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+
+  font-size: 0.5em;
+  gap: 1px;
+  line-height: 1;
+  font-weight: 700;
+
+  color: #1f4f82; /* darker blue */
+  opacity: 1;
+
+  pointer-events: none;
+}
+
+
+.note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.sudoku-cell input {
+  position: relative;
+  z-index: 2;
+  background: transparent;
+}
+.sudoku-cell input {
+  width: 100%;
+  height: 100%;
+  display: block;
+
+  border: none;
+  text-align: center;
+  font-size: 1.4em;
+  font-weight: 600;
+  font-family: "Fredoka", sans-serif;
+
+  background: transparent;
+  color: #000069;
+
+  outline: none;
+}
+.sudoku-cell input:not(:placeholder-shown) + .notes {
+  opacity: 0.25;
+}
+
 
   .footer {
     margin-top: 40px;
@@ -152,6 +332,199 @@ h3 {
     from { transform: translate(0,0) rotate(45deg); opacity: 1; }
     to { transform: translate(-300px,300px) rotate(45deg); opacity: 0; }
   }
+  
+#breathing-orb {
+  width: 110px;
+  height: 110px;
+  margin: 0 auto;
+
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 30% 30%,
+    #e6f2ff,
+    #7fb3ff
+  );
+
+  box-shadow:
+    0 0 20px rgba(127, 179, 255, 0.5),
+    inset 0 0 20px rgba(255, 255, 255, 0.6);
+
+  transition:
+    transform 4s ease-in-out,
+    box-shadow 4s ease-in-out;
+
+  cursor: pointer;
+}
+
+#breath-text {
+  font-family: "Fredoka", sans-serif;
+  font-size: 1.2em;
+  margin-bottom: 18px;
+  letter-spacing: 0.05em;
+  opacity: 0.85;
+}
+
+#breathing-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin: 40px 0;
+}
+
+#coin-game {
+  margin: 50px auto;
+  text-align: center;
+}
+
+#coin-board {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+  max-width: 760px;
+  margin: 24px auto;
+}
+
+.coin-column {
+  background: rgba(255,255,255,0.6);
+  border-radius: 18px;
+  padding: 8px 4px;
+  min-height: 420px;
+
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+}
+.coin-column {
+  transition: transform 0.15s ease;
+}
+
+.coin-column:hover {
+  transform: translateY(-2px);
+}
+
+
+.coin {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+
+  margin-top: -18px; /* 👈 overlap */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-family: "Fredoka", sans-serif;
+  font-weight: 600;
+  color: white;
+
+  transition: transform 0.2s ease;
+}
+
+
+.coin-column {
+  background: rgba(255,255,255,0.6);
+  border-radius: 18px;
+  padding: 8px 4px;
+
+  height: 420px;
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+
+  transition: background 0.2s ease;
+}
+
+
+/* Mergeable column highlight */
+.coin-column.mergeable {
+  outline: 3px solid rgba(96, 165, 250, 0.6);
+  outline-offset: -3px;
+  box-shadow: 0 0 12px rgba(96, 165, 250, 0.35);
+}
+
+#coin-tray {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+  min-height: 60px;
+}
+
+#draggable-coin {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: none;
+
+  align-items: center;
+  justify-content: center;
+
+  font-family: "Fredoka", sans-serif;
+  font-weight: 700;
+  color: white;
+
+  cursor: grab;
+}
+
+#draggable-coin:active {
+  cursor: grabbing;
+}
+
+
+.coin-column.drag-over {
+  background: rgba(96, 165, 250, 0.25);
+}
+
+.coin-column.selected {
+  outline: 4px solid #3b82f6;
+  outline-offset: -4px;
+  box-shadow: 0 0 14px rgba(59, 130, 246, 0.5);
+}
+
+.coin.selected {
+  transform: scale(1.1);
+}
+
+
+#toast-container {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 10000;
+}
+
+.toast {
+  background: rgba(0, 0, 105, 0.9);
+  color: #afcfaf;
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-family: "Fredoka", sans-serif;
+  font-weight: 600;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: slideIn 0.4s forwards, fadeOut 0.4s forwards 2.6s;
+}
+
+@keyframes slideIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+
 </style>
 </head>
 
@@ -177,17 +550,58 @@ h3 {
 
   <p class="click-message" id="surprise"></p>
 <p></p>
+<div id="sudoku">
+  <h2>🧩 Sudoku</h2>
 
+  <div class="difficulty">
+    <button onclick="newSudoku('easy')" class="diff-btn">Easy</button>
+    <button onclick="newSudoku('medium')" class="diff-btn">Medium</button>
+    <button onclick="newSudoku('hard')" class="diff-btn">Hard</button>
+  </div>
+  <div id="toast-container"></div>
+
+<button class="diff-btn" onclick="toggleNotes()">✏️ Notes</button>
+<button class="diff-btn" onclick="undoMove()">↩ Undo</button>
+<button class="diff-btn" onclick="toggleCheck(this)">✔ Check</button>
+
+  <div class="sudoku-wrapper">
+    <div id="sudoku-grid" class="sudoku-grid"></div>
+  </div>
+</div>
+
+<p></p>
 <audio id="bg-music" preload="auto">
   <source src="NeverTooMuch.mp3" type="audio/mpeg">
   Your browser does not support audio.
 </audio>
 
-<button class="button music" onclick="toggleMusic()">
+<button class="button music" onclick="toggleMusic(this)">
   A song that makes me think of you
 </button>
 
+<div id="breathing-section">
+  <h2>🌬️ Take a breath</h2>
+  <p id="breath-text">Inhale</p>
 
+  <div id="breathing-orb"></div>
+
+  <p class="breath-hint">Tap the orb to pause</p>
+</div>
+
+<div id="coin-game">
+  <h2>🪙 Coin Merge</h2>
+  
+<div id="coin-tray">
+  <div id="draggable-coin"></div>
+</div>
+
+  <div id="coin-board"></div>
+
+  <button class="diff-btn" onclick="dealCoin()">Deal</button>
+  <button class="diff-btn" onclick="mergeColumns()">Merge</button>
+  <button class="diff-btn" onclick="restartCoinGame()">Restart</button>
+
+</div>
 
   <div class="footer">
     I hope you can come back to this and smile anytime💚
@@ -200,6 +614,10 @@ h3 {
 </div>
 
 <script>
+
+let solvedGrid = [];
+let showCorrectness = false;
+
 /* TWINKLING STARS */
 const starContainer = document.getElementById("star-container");
 const STAR_COUNT = 70;
@@ -286,7 +704,18 @@ const compliments = [
   "I thoroughly enjoy staying up and just chatting with you about anything and everything",
   "I find myself missing you constantly",
   "I'm so happy that the circumstances aligned for us to meet and get to know each other",
-  "Thank you for being you, such a fantastic and thoughtful person, I would never want you any other way"
+  "Thank you for being you, such a fantastic and thoughtful person, I would never want you any other way",
+  "I admire your bravery to speak up on things that matter to you",
+  "You are good at being proactive, and your routines inspire me",
+  "You are so strong, and I am happy to be a shoulder to lean on whenever you need help bouncing back",
+  "Your advice is meaningful to me, and I can count on you to be honest",
+  "Your enthusiasm for adventure is contagious and exciting",
+  "I am grateful for how you show up for me physically, emotionally, and spiritually",
+  "Talking with you and being around you energises me creatively",
+  "I appreciate how much you allow me to feel my feelings without judgement",
+  "Your experiences have made you the strong and knowledgeable person today, and it is important to recognise the work you've done",
+  "Your ability to consider a problem from multiple angles and perspectives is a gift",
+  "You embrace your silliness unapologetically, and it's inspiring"
 ];
 
 function revealMessage() {
@@ -344,21 +773,633 @@ function launchConfetti() {
     setTimeout(() => piece.remove(), 3000);
   }
 }
-
 const music = document.getElementById("bg-music");
 let isPlaying = false;
 
-function toggleMusic() {
+function toggleMusic(btn) {
   if (!isPlaying) {
     music.play();
     isPlaying = true;
-    event.target.textContent = "Pause music";
+    btn.textContent = "Pause music";
   } else {
     music.pause();
     isPlaying = false;
-    event.target.textContent = "A song that makes me think of you";
+    btn.textContent = "A song that makes me think of you";
   }
 }
+
+function newSudoku(level) {
+  history = [];
+
+  solvedGrid = generateSolvedGrid();              // KEEP IT
+  const puzzle = removeNumbers(solvedGrid, level);
+
+  renderGrid(puzzle);
+  saveState();
+}
+
+function toggleCheck(btn) {
+  showCorrectness = !showCorrectness;
+  btn.textContent = showCorrectness ? "✔ Checking" : "✔ Check";
+
+  checkCorrectness();
+}
+
+function checkCorrectness() {
+  const cells = document.querySelectorAll(".sudoku-cell");
+
+  cells.forEach((cell, i) => {
+    const input = cell.querySelector("input");
+
+    cell.classList.remove("correct", "incorrect");
+
+    if (!showCorrectness || !input.value || input.disabled) return;
+
+    const row = Math.floor(i / 9);
+    const col = i % 9;
+
+    if (Number(input.value) === solvedGrid[row][col]) {
+      cell.classList.add("correct");
+    } else {
+      cell.classList.add("incorrect");
+    }
+  });
+}
+
+function showToast(message, duration = 3000) {
+  const container = document.getElementById("toast-container");
+  const toast = document.createElement("div");
+  toast.className = "toast";
+  toast.textContent = message;
+  container.appendChild(toast);
+
+  setTimeout(() => {
+    toast.remove();
+  }, duration);
+}
+
+
+
+/* ------------------ SOLVER ------------------ */
+
+function generateSolvedGrid() {
+  const grid = Array.from({ length: 9 }, () => Array(9).fill(""));
+
+  fillGrid(grid);
+  return grid;
+}
+
+function fillGrid(grid) {
+  for (let row = 0; row < 9; row++) {
+    for (let col = 0; col < 9; col++) {
+      if (grid[row][col] === "") {
+        shuffle([1,2,3,4,5,6,7,8,9]).forEach(num => {
+          if (isValid(grid, row, col, num)) {
+            grid[row][col] = num;
+            if (fillGrid(grid)) return true;
+            grid[row][col] = "";
+          }
+        });
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+function isValid(grid, row, col, num) {
+  for (let i = 0; i < 9; i++) {
+    if (
+      grid[row][i] === num ||
+      grid[i][col] === num ||
+      grid[Math.floor(row/3)*3 + Math.floor(i/3)]
+          [Math.floor(col/3)*3 + i%3] === num
+    ) return false;
+  }
+  return true;
+}
+
+function shuffle(arr) {
+  return arr.sort(() => Math.random() - 0.5);
+}
+
+/* ------------------ PUZZLE CREATION ------------------ */
+
+function removeNumbers(grid, level) {
+  const puzzle = grid.map(row => row.slice());
+
+ let removals = {
+  easy: 30,    // ~51 clues (very approachable)
+  medium: 40,  // ~41 clues
+  hard: 48     // ~33 clues (still fair)
+}[level] || 40;
+
+  while (removals > 0) {
+    const row = Math.floor(Math.random() * 9);
+    const col = Math.floor(Math.random() * 9);
+
+    if (puzzle[row][col] !== "") {
+      puzzle[row][col] = "";
+      removals--;
+    }
+  }
+
+  return puzzle;
+}
+let notesMode = false;
+
+function toggleNotes() {
+  notesMode = !notesMode;
+  showToast(notesMode ? "✏️ Notes mode ON" : "✏️ Notes mode OFF");
+
+}
+function enableLongPress(cell, input, notes) {
+
+  let pressTimer;
+
+  cell.addEventListener("touchstart", () => {
+    if (input.disabled) return;
+    pressTimer = setTimeout(() => {
+      notesMode = true;
+      navigator.vibrate?.(20);
+    }, 450);
+  });
+
+  cell.addEventListener("touchend", () => {
+    clearTimeout(pressTimer);
+    notesMode = false;
+  });
+
+  cell.addEventListener("touchmove", () => {
+    clearTimeout(pressTimer);
+  });
+}
+
+function renderGrid(puzzle) {
+  const grid = document.getElementById("sudoku-grid");
+  grid.innerHTML = "";
+
+  puzzle.flat().forEach(value => {
+    const cell = document.createElement("div");
+    cell.className = "sudoku-cell";
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.maxLength = 1;
+    input.inputMode = "numeric";
+
+    const notes = document.createElement("div");
+    notes.className = "notes";
+
+    for (let i = 1; i <= 9; i++) {
+      const n = document.createElement("div");
+      n.className = "note";
+      n.textContent = "";
+      notes.appendChild(n);
+    }
+
+    if (value !== "") {
+      input.value = value;
+      input.disabled = true;
+    }
+
+input.addEventListener("input", () => {
+  saveState();
+
+  input.value = input.value.replace(/[^1-9]/g, "");
+
+  if (!notesMode && input.value !== "") {
+    notes.querySelectorAll(".note").forEach(n => n.textContent = "");
+  }
+
+  checkConflicts();
+  checkCorrectness();   // ← ADD THIS
+  checkWin();
+});
+
+
+
+    cell.addEventListener("click", () => {
+      input.focus();
+    });
+
+cell.addEventListener("keydown", e => {
+  if (!notesMode || input.disabled) return;
+
+  if (e.key >= "1" && e.key <= "9") {
+    e.preventDefault();
+    saveState(); // ← ADD HERE
+
+    const idx = Number(e.key) - 1;
+    notes.children[idx].textContent =
+      notes.children[idx].textContent ? "" : e.key;
+  }
+});
+
+
+    cell.appendChild(input);
+    cell.appendChild(notes);
+    grid.appendChild(cell);
+	enableLongPress(cell, input, notes);
+
+  });
+}
+let history = [];
+
+function saveState() {
+  const state = [];
+  document.querySelectorAll(".sudoku-cell").forEach(cell => {
+    const input = cell.querySelector("input");
+    const notes = [...cell.querySelectorAll(".note")].map(n => n.textContent);
+    state.push({ value: input.value, notes });
+  });
+  history.push(state);
+}
+
+function undoMove() {
+  if (!history.length) return;
+
+  const state = history.pop();
+  document.querySelectorAll(".sudoku-cell").forEach((cell, i) => {
+    const input = cell.querySelector("input");
+    const notes = cell.querySelectorAll(".note");
+
+    input.value = state[i].value;
+    notes.forEach((n, idx) => (n.textContent = state[i].notes[idx]));
+  });
+}
+
+function checkConflicts() {
+  const cells = [...document.querySelectorAll(".sudoku-cell")];
+  cells.forEach(c => c.classList.remove("conflict"));
+
+  cells.forEach((cell, i) => {
+    const input = cell.querySelector("input");
+    if (!input.value) return;
+
+    const row = Math.floor(i / 9);
+    const col = i % 9;
+
+    cells.forEach((other, j) => {
+      if (i === j) return;
+      const oInput = other.querySelector("input");
+      if (!oInput.value) return;
+
+      const r = Math.floor(j / 9);
+      const c = j % 9;
+
+      const sameBlock =
+        Math.floor(row / 3) === Math.floor(r / 3) &&
+        Math.floor(col / 3) === Math.floor(c / 3);
+
+      if (
+        oInput.value === input.value &&
+        (row === r || col === c || sameBlock)
+      ) {
+        cell.classList.add("conflict");
+        other.classList.add("conflict");
+      }
+    });
+  });
+}
+function checkWin() {
+  const cells = [...document.querySelectorAll(".sudoku-cell")];
+
+  // All cells filled?
+  if (cells.some(c => !c.querySelector("input").value)) return;
+
+  // No conflicts?
+  checkConflicts();
+  if (cells.some(c => c.classList.contains("conflict"))) return;
+
+ showToast("✨ You solved it perfectly! ✨");
+launchConfetti();
+}
+
+newSudoku("medium");
+
+const orb = document.getElementById("breathing-orb");
+const breathText = document.getElementById("breath-text");
+
+let breathingPaused = false;
+let breathTimeouts = [];
+
+function clearBreathTimers() {
+  breathTimeouts.forEach(t => clearTimeout(t));
+  breathTimeouts = [];
+}
+
+function setOrb(scale, glow, duration) {
+  orb.style.transitionDuration = duration + "ms";
+  orb.style.transform = `scale(${scale})`;
+  orb.style.boxShadow = `
+    0 0 ${glow}px rgba(127,179,255,0.9),
+    0 0 ${glow * 1.6}px rgba(127,179,255,0.4),
+    inset 0 0 25px rgba(255,255,255,0.7)
+  `;
+}
+
+function startBreathingCycle() {
+  clearBreathTimers();
+
+  // INHALE – grow noticeably
+  breathText.textContent = "Inhale";
+  setOrb(1.15, 60, 4000);
+
+  breathTimeouts.push(setTimeout(() => {
+    // HOLD – stay full
+    breathText.textContent = "Hold";
+    setOrb(1.15, 60, 7000);
+  }, 4000));
+
+  breathTimeouts.push(setTimeout(() => {
+    // EXHALE – shrink clearly
+    breathText.textContent = "Exhale";
+    setOrb(0.8, 18, 8000);
+  }, 11000));
+
+  breathTimeouts.push(setTimeout(() => {
+    if (!breathingPaused) startBreathingCycle();
+  }, 19000));
+}
+
+orb.addEventListener("click", () => {
+  breathingPaused = !breathingPaused;
+
+  if (breathingPaused) {
+    clearBreathTimers();
+    breathText.textContent = "Paused";
+  } else {
+    startBreathingCycle();
+  }
+});
+
+// Start automatically
+startBreathingCycle();
+
+/* =========================
+   COIN SORT GAME (MANUAL MERGE)
+========================= */
+
+const COIN_COLS = 10;
+const COLUMN_HEIGHT = 12;
+const MAX_LEVEL = 7; // 0–7 = 8 values
+let selectedCol = null;
+
+const coinTypes = [
+  { color: "#93c5fd", label: "1" }, 
+  { color: "#7dd3fc", label: "2" },
+  { color: "#60a5fa", label: "3" },
+  { color: "#3b82f6", label: "4" },
+  { color: "#2563eb", label: "5" },
+  { color: "#1e40af", label: "6" },
+  { color: "#1e3a8a", label: "7" },
+  { color: "#172554", label: "8" }
+];
+
+let board = Array.from({ length: COIN_COLS }, () => []);
+let gameOver = false;
+
+const boardEl = document.getElementById("coin-board");
+
+/* ---------- BOARD ---------- */
+
+function createBoard() {
+  boardEl.innerHTML = "";
+
+  board.forEach(() => {
+    const col = document.createElement("div");
+    col.className = "coin-column";
+    boardEl.appendChild(col);
+  });
+}
+
+function renderBoard() {
+  document.querySelectorAll(".coin-column").forEach((colEl, i) => {
+    colEl.innerHTML = "";
+    colEl.classList.remove("mergeable", "selected");
+
+    const col = board[i];
+
+    // Mergeable highlight
+    if (
+      col.length === COLUMN_HEIGHT &&
+      col.every(v => v === col[0]) &&
+      col[0] < MAX_LEVEL
+    ) {
+      colEl.classList.add("mergeable");
+    }
+
+    // Selected highlight
+    if (i === selectedCol) {
+      colEl.classList.add("selected");
+    }
+let previewMoveCount = 0;
+
+if (
+  selectedCol !== null &&
+  selectedCol !== i &&
+  board[selectedCol].length &&
+  col.length < COLUMN_HEIGHT
+) {
+  const fromCol = board[selectedCol];
+  const value = fromCol[fromCol.length - 1];
+
+  if (!col.length || col[col.length - 1] === value) {
+    // count run in source
+    let run = 0;
+    for (let j = fromCol.length - 1; j >= 0; j--) {
+      if (fromCol[j] === value) run++;
+      else break;
+    }
+
+    const freeSpace = COLUMN_HEIGHT - col.length;
+    previewMoveCount = Math.min(run, freeSpace);
+  }
+}
+
+    col.forEach((level, idx) => {
+  const coin = document.createElement("div");
+  coin.className = "coin";
+  coin.style.background = coinTypes[level].color;
+  coin.textContent = coinTypes[level].label;
+
+  // Tooltip preview on destination column
+  if (
+    previewMoveCount > 0 &&
+    idx === col.length - 1
+  ) {
+    coin.title = `Move ${previewMoveCount}`;
+  }
+
+  colEl.appendChild(coin);
+});
+
+
+    // Tap / click column
+    colEl.onclick = () => handleColumnClick(i);
+  });
+}
+
+function handleColumnClick(index) {
+  if (gameOver) return;
+
+  // No selection yet → select if column has coins
+  if (selectedCol === null) {
+    if (board[index].length) {
+      selectedCol = index;
+      renderBoard();
+    }
+    return;
+  }
+
+  // Same column → deselect
+  if (selectedCol === index) {
+    selectedCol = null;
+    renderBoard();
+    return;
+  }
+
+  // Try move
+  moveCoin(selectedCol, index);
+  selectedCol = null;
+  renderBoard();
+}
+
+
+/* ---------- DEAL ---------- */
+
+function randomDealLevel() {
+  const r = Math.random();
+
+  if (r < 0.20) return 0;
+  if (r < 0.40) return 1;
+  if (r < 0.60) return 2;
+  if (r < 0.75) return 3;
+  if (r < 0.85) return 4;
+  if (r < 0.93) return 5;
+  if (r < 0.98) return 6;
+  return 7;
+}
+
+
+function dealCoin() {
+  if (gameOver) return;
+
+  for (let i = 0; i < COIN_COLS; i++) {
+    // Dynamic batch size for this column (2–5 coins)
+    const batchSize = 3 + Math.floor(Math.random() * 4); // 3–6
+
+    for (let b = 0; b < batchSize; b++) {
+      if (board[i].length < COLUMN_HEIGHT) {
+        const level = randomDealLevel();
+        board[i].push(level);
+      }
+    }
+  }
+
+  checkLoss();
+  renderBoard();
+}
+
+
+/* ---------- MERGE ---------- */
+
+function mergeColumns() {
+  if (gameOver) return;
+
+  let merged = false;
+
+  for (let i = 0; i < COIN_COLS; i++) {
+    const col = board[i];
+
+    if (col.length !== COLUMN_HEIGHT) continue;
+
+    const base = col[0];
+    const same = col.every(v => v === base);
+
+    if (same && base < MAX_LEVEL) {
+      board[i] = [base + 1];
+      merged = true;
+    }
+  }
+
+  if (!merged) {
+ showToast("No valid merges yet 💭");;
+  }
+
+  renderBoard();
+}
+
+function moveCoin(from, to) {
+  if (!board[from].length) return;
+
+  const fromCol = board[from];
+  const toCol = board[to];
+
+  const value = fromCol[fromCol.length - 1];
+
+  // Target must be empty or match
+  if (toCol.length && toCol[toCol.length - 1] !== value) {
+    showToast("Coins must match 🔁");
+    return;
+  }
+
+  // Count how many matching coins are on top of source
+  let sourceRun = 0;
+  for (let i = fromCol.length - 1; i >= 0; i--) {
+    if (fromCol[i] === value) sourceRun++;
+    else break;
+  }
+
+  const freeSpace = COLUMN_HEIGHT - toCol.length;
+  if (freeSpace <= 0) {
+    showToast("That column is full 🧱");
+    return;
+  }
+
+  // Move only what fits
+  const moveCount = Math.min(sourceRun, freeSpace);
+
+  for (let i = 0; i < moveCount; i++) {
+    toCol.push(value);
+    fromCol.pop();
+  }
+
+  // Optional: auto-merge if filled
+  if (
+    toCol.length === COLUMN_HEIGHT &&
+    toCol.every(v => v === value) &&
+    value < MAX_LEVEL
+  ) {
+    mergeColumn(to);
+  }
+}
+
+
+/* ---------- LOSS ---------- */
+
+function checkLoss() {
+  const full = board.every(col => col.length >= COLUMN_HEIGHT);
+  if (!full) return;
+
+  gameOver = true;
+ showToast("💥 Game Over! Board is full 💥");
+}
+
+/* ---------- RESTART ---------- */
+
+function restartCoinGame() {
+  board = Array.from({ length: COIN_COLS }, () => []);
+  gameOver = false;
+  renderBoard();
+}
+
+/* ---------- START ---------- */
+
+createBoard();
+renderBoard();
+
 
 
 </script>
