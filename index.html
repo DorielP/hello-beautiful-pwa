@@ -236,10 +236,13 @@ h3 {
 
 /* MOBILE */
 @media (max-width: 420px) {
-  .sudoku-grid {
-    width: 90vw;
-    height: 90vw;
-  }
+.sudoku-grid {
+  width: min(90vw, 360px);
+  aspect-ratio: 1 / 1;
+  height: auto;
+}
+*, *::before, *::after {
+  box-sizing: border-box;
 }
 @media (max-width: 420px) {
   .notes {
