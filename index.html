@@ -891,24 +891,41 @@ function shuffle(arr) {
 function removeNumbers(grid, level) {
   const puzzle = grid.map(row => row.slice());
 
- let removals = {
-  easy: 30,    // ~51 clues (very approachable)
-  medium: 40,  // ~41 clues
-  hard: 48     // ~33 clues (still fair)
-}[level] || 40;
+  const removals = {
+    easy: 30,
+    medium: 40,
+    hard: 48
+  }[level] || 40;
 
-  while (removals > 0) {
+  const rowRemovals = Array(9).fill(0);
+  const maxPerRow = Math.ceil(removals / 9) + 1;
+
+  const boxRemovals = Array(9).fill(0);
+  const maxPerBox = Math.ceil(removals / 9) + 1;
+
+  let removed = 0;
+  let attempts = 0;
+
+  while (removed < removals && attempts < 2000) {
+    attempts++;
+
     const row = Math.floor(Math.random() * 9);
     const col = Math.floor(Math.random() * 9);
+    const boxIndex = Math.floor(row / 3) * 3 + Math.floor(col / 3);
 
-    if (puzzle[row][col] !== "") {
-      puzzle[row][col] = "";
-      removals--;
-    }
+    if (puzzle[row][col] === "") continue;
+    if (rowRemovals[row] >= maxPerRow) continue;
+    if (boxRemovals[boxIndex] >= maxPerBox) continue;
+
+    puzzle[row][col] = "";
+    rowRemovals[row]++;
+    boxRemovals[boxIndex]++;
+    removed++;
   }
 
   return puzzle;
 }
+
 let notesMode = false;
 
 function toggleNotes() {
