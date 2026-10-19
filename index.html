@@ -1428,9 +1428,50 @@ function handleColumnClick(index) {
 
 /* ---------- DEAL ---------- */
 
+
 function randomDealLevel() {
-  return Math.floor(Math.random() * 4);
+  // Find all coin levels currently on the board.
+  const levels = board.flat().map(coin => coin.level);
+
+  // Start with a sensible range for a fresh game.
+  if (levels.length === 0) {
+    return Math.floor(Math.random() * 4);
+  }
+
+  // Find the average level of coins on the board.
+  const averageLevel =
+    levels.reduce((sum, level) => sum + level, 0) /
+    levels.length;
+
+  // Find the highest level currently present.
+  const highestLevel = Math.max(...levels);
+
+  // Usually deal around the average, but allow some
+  // lower and higher values as the game progresses.
+  const centre = Math.round(averageLevel);
+
+  const minLevel = Math.max(0, centre - 2);
+  const maxLevel = Math.max(
+    centre + 2,
+    Math.min(highestLevel + 1, centre + 3)
+  );
+
+  // Bias the selection toward levels already on the board.
+  const existingLevels = levels.filter(
+    level => level >= minLevel && level <= maxLevel
+  );
+
+  if (existingLevels.length && Math.random() < 0.7) {
+    return existingLevels[
+      Math.floor(Math.random() * existingLevels.length)
+    ];
+  }
+
+  return minLevel + Math.floor(
+    Math.random() * (maxLevel - minLevel + 1)
+  );
 }
+
 
 
 
