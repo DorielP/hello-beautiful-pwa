@@ -357,110 +357,166 @@ h3 {
   text-align: center;
 }
 
+
 #coin-board {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 14px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
   max-width: 760px;
   margin: 24px auto;
+  align-items: end;
 }
 
+/* The recessed wells that hold the coins */
 .coin-column {
-  background: rgba(255,255,255,0.6);
-  border-radius: 18px;
-  padding: 8px 4px;
-  min-height: 420px;
+  box-sizing: border-box;
+  position: relative;
+  min-width: 0;
+  height: 190px;
+  padding: 7px 3px 5px;
+  overflow: hidden;
 
   display: flex;
   flex-direction: column-reverse;
+  justify-content: flex-start;
   align-items: center;
-}
-.coin-column {
-  transition: transform 0.15s ease;
+
+  background: linear-gradient(
+    180deg,
+    rgba(220, 229, 239, 0.85),
+    rgba(246, 249, 253, 0.95)
+  );
+  border: 2px solid rgba(255, 255, 255, 0.95);
+  border-radius: 15px;
+  box-shadow:
+    inset 0 3px 7px rgba(78, 104, 130, 0.13),
+    0 3px 7px rgba(65, 92, 120, 0.1);
+
+  transition: background 0.2s ease, transform 0.15s ease;
 }
 
 .coin-column:hover {
   transform: translateY(-2px);
 }
 
+.coin-column.selected {
+  outline: 3px solid #64b5e9;
+  outline-offset: -4px;
+}
 
+.coin-column.drag-over {
+  background: rgba(100, 181, 233, 0.3);
+}
+
+.coin-column.mergeable {
+  outline: 3px solid rgba(91, 196, 129, 0.8);
+  outline-offset: -3px;
+}
+
+/* Each coin looks like a flattened cylinder.
+   The negative margin makes the coins stack. */
 .coin {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
+  --coin-color: #35a9bd;
 
-  margin-top: -18px; /* 👈 overlap */
+  position: relative;
+  box-sizing: border-box;
+  flex: 0 0 26px;
+  width: 84%;
+  max-width: 105px;
+  height: 26px;
+  margin-top: -14px;
+
   display: flex;
   align-items: center;
   justify-content: center;
 
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.38);
+
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.85) 0%,
+    var(--coin-color) 30%,
+    var(--coin-color) 65%,
+    rgba(0, 0, 0, 0.22) 100%
+  );
+
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -3px 0 rgba(0, 0, 0, 0.12),
+    0 2px 2px rgba(0, 0, 0, 0.12);
+
   font-family: "Fredoka", sans-serif;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 700;
   color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 
   transition: transform 0.2s ease;
 }
 
-
-.coin-column {
-  background: rgba(255,255,255,0.6);
-  border-radius: 18px;
-  padding: 8px 4px;
-
-  height: 420px;
-  overflow: hidden;
-
-  display: flex;
-  flex-direction: column-reverse;
-  align-items: center;
-
-  transition: background 0.2s ease;
+/* Only the exposed top coin displays its number */
+.coin:not(.coin-top) {
+  color: transparent;
+  text-shadow: none;
 }
 
+.coin-top {
+  z-index: 2;
+}
 
-/* Mergeable column highlight */
-.coin-column.mergeable {
-  outline: 3px solid rgba(96, 165, 250, 0.6);
-  outline-offset: -3px;
-  box-shadow: 0 0 12px rgba(96, 165, 250, 0.35);
+/* A rope/rubber-band appearance for bound coins */
+.coin.bound::after {
+  content: "";
+  position: absolute;
+  left: -2%;
+  top: 65%;
+  width: 104%;
+  height: 5px;
+
+  border-top: 1px solid #76502f;
+  border-bottom: 1px solid #76502f;
+  border-radius: 50%;
+
+  background: repeating-linear-gradient(
+    90deg,
+    #e3c08a 0 3px,
+    #96652f 3px 5px
+  );
+
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  transform: rotate(-8deg);
+  pointer-events: none;
 }
 
 #coin-tray {
   display: flex;
   justify-content: center;
   margin-bottom: 16px;
-  min-height: 60px;
+  min-height: 20px;
 }
 
 #draggable-coin {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
   display: none;
-
-  align-items: center;
-  justify-content: center;
-
-  font-family: "Fredoka", sans-serif;
-  font-weight: 700;
-  color: white;
-
-  cursor: grab;
 }
 
-#draggable-coin:active {
-  cursor: grabbing;
-}
+@media (max-width: 600px) {
+  #coin-board {
+    gap: 7px;
+  }
 
+  .coin-column {
+    height: 170px;
+    border-radius: 12px;
+  }
 
-.coin-column.drag-over {
-  background: rgba(96, 165, 250, 0.25);
-}
-
-.coin-column.selected {
-  outline: 4px solid #3b82f6;
-  outline-offset: -4px;
-  box-shadow: 0 0 14px rgba(59, 130, 246, 0.5);
+  .coin {
+    width: 88%;
+    height: 24px;
+    flex-basis: 24px;
+    margin-top: -12px;
+    font-size: 13px;
+  }
 }
 
 .coin.selected {
@@ -569,7 +625,7 @@ h3 {
 </div>
 
 <div id="coin-game">
-  <h2>🪙 Coin Merge</h2>
+  <h2>🪙 Coin Sort</h2>
   
 <div id="coin-tray">
   <div id="draggable-coin"></div>
@@ -1130,114 +1186,208 @@ orb.addEventListener("click", () => {
 // Start automatically
 startBreathingCycle();
 
+
 /* =========================
-   COIN SORT GAME (MANUAL MERGE)
+   COIN SORT GAME
 ========================= */
 
 const COIN_COLS = 10;
 const COLUMN_HEIGHT = 12;
-const MAX_LEVEL = 7; // 0–7 = 8 values
-let selectedCol = null;
+const MAX_LEVEL = 7;
 
+let selectedCol = null;
+let gameOver = false;
+let nextBundleId = 1;
+
+/* Different colours for each coin number */
 const coinTypes = [
-  { color: "#93c5fd", label: "1" }, 
-  { color: "#7dd3fc", label: "2" },
-  { color: "#60a5fa", label: "3" },
-  { color: "#3b82f6", label: "4" },
-  { color: "#2563eb", label: "5" },
-  { color: "#1e40af", label: "6" },
-  { color: "#1e3a8a", label: "7" },
-  { color: "#172554", label: "8" }
+  { color: "#35b9c8", label: "1" },
+  { color: "#e96c63", label: "2" },
+  { color: "#f1b938", label: "3" },
+  { color: "#65bd78", label: "4" },
+  { color: "#438de0", label: "5" },
+  { color: "#8669e8", label: "6" },
+  { color: "#df58b5", label: "7" },
+  { color: "#f28a4a", label: "8" }
 ];
 
-let board = Array.from({ length: COIN_COLS }, () => []);
-let gameOver = false;
+/* Each coin stores its number and optional bundle ID.
+   Coins sharing a bundle ID are tied together. */
+function makeCoin(level, bundleId = null) {
+  return { level, bundleId };
+}
+
+let board = Array.from(
+  { length: COIN_COLS },
+  () => []
+);
 
 const boardEl = document.getElementById("coin-board");
 
-/* ---------- BOARD ---------- */
+
+/* ---------- BOARD CREATION ---------- */
 
 function createBoard() {
   boardEl.innerHTML = "";
 
-  board.forEach(() => {
-    const col = document.createElement("div");
-    col.className = "coin-column";
-    boardEl.appendChild(col);
-  });
+  for (let i = 0; i < COIN_COLS; i++) {
+    const column = document.createElement("div");
+    column.className = "coin-column";
+    boardEl.appendChild(column);
+  }
 }
+
+
+/* ---------- FIND MOVABLE COINS ---------- */
+
+/* Only the exposed top coins can move.
+   If the top coin is tied, return its entire tied group.
+   Otherwise, return the consecutive untied coins of
+   the same number at the top of the column. */
+
+function getMovableGroup(column) {
+  if (!column.length) return [];
+
+  const top = column[column.length - 1];
+  let start = column.length - 1;
+
+  if (top.bundleId !== null) {
+    // A tied group must remain together.
+    while (start > 0) {
+      const below = column[start - 1];
+
+      if (
+        below.bundleId !== top.bundleId ||
+        below.level !== top.level
+      ) {
+        break;
+      }
+
+      start--;
+    }
+  } else {
+    // Collect the exposed, untied coins of the same value.
+    while (start > 0) {
+      const below = column[start - 1];
+
+      if (
+        below.level !== top.level ||
+        below.bundleId !== null
+      ) {
+        break;
+      }
+
+      start--;
+    }
+  }
+
+  return column.slice(start);
+}
+
+
+/* ---------- DRAW THE BOARD ---------- */
 
 function renderBoard() {
-  document.querySelectorAll(".coin-column").forEach((colEl, i) => {
-    colEl.innerHTML = "";
-    colEl.classList.remove("mergeable", "selected");
+  const columns = boardEl.querySelectorAll(".coin-column");
 
-    const col = board[i];
+  columns.forEach((columnEl, i) => {
+    columnEl.innerHTML = "";
+    columnEl.classList.remove(
+      "mergeable",
+      "selected"
+    );
+    columnEl.removeAttribute("title");
 
-    // Mergeable highlight
+    const column = board[i];
+
+    // Highlight a full, mergeable column.
     if (
-      col.length === COLUMN_HEIGHT &&
-      col.every(v => v === col[0]) &&
-      col[0] < MAX_LEVEL
+      column.length === COLUMN_HEIGHT &&
+      column.every(coin =>
+        coin.level === column[0].level
+      ) &&
+      column[0].level < MAX_LEVEL
     ) {
-      colEl.classList.add("mergeable");
+      columnEl.classList.add("mergeable");
     }
 
-    // Selected highlight
     if (i === selectedCol) {
-      colEl.classList.add("selected");
-    }
-let previewMoveCount = 0;
-
-if (
-  selectedCol !== null &&
-  selectedCol !== i &&
-  board[selectedCol].length &&
-  col.length < COLUMN_HEIGHT
-) {
-  const fromCol = board[selectedCol];
-  const value = fromCol[fromCol.length - 1];
-
-  if (!col.length || col[col.length - 1] === value) {
-    // count run in source
-    let run = 0;
-    for (let j = fromCol.length - 1; j >= 0; j--) {
-      if (fromCol[j] === value) run++;
-      else break;
+      columnEl.classList.add("selected");
     }
 
-    const freeSpace = COLUMN_HEIGHT - col.length;
-    previewMoveCount = Math.min(run, freeSpace);
-  }
-}
+    // Preview how many coins could move here.
+    if (
+      selectedCol !== null &&
+      selectedCol !== i &&
+      board[selectedCol].length
+    ) {
+      const group = getMovableGroup(board[selectedCol]);
 
-    col.forEach((level, idx) => {
-  const coin = document.createElement("div");
-  coin.className = "coin";
-  coin.style.background = coinTypes[level].color;
-  coin.textContent = coinTypes[level].label;
+      if (group.length) {
+        const level = group[group.length - 1].level;
+        const freeSpace = COLUMN_HEIGHT - column.length;
+        const bound = group[group.length - 1].bundleId !== null;
 
-  // Tooltip preview on destination column
-  if (
-    previewMoveCount > 0 &&
-    idx === col.length - 1
-  ) {
-    coin.title = `Move ${previewMoveCount}`;
-  }
+        const matches =
+          !column.length ||
+          column[column.length - 1].level === level;
 
-  colEl.appendChild(coin);
-});
+        if (matches && freeSpace > 0) {
+          let possibleCount = 0;
 
+          if (bound) {
+            // Never offer a partial move for a tied group.
+            if (group.length <= freeSpace) {
+              possibleCount = group.length;
+            }
+          } else {
+            possibleCount = Math.min(
+              group.length,
+              freeSpace
+            );
+          }
 
-    // Tap / click column
-    colEl.onclick = () => handleColumnClick(i);
+          if (possibleCount > 0) {
+            columnEl.title =
+              `Move ${possibleCount} coin(s)`;
+          }
+        }
+      }
+    }
+
+    column.forEach((coinData, idx) => {
+      const coin = document.createElement("div");
+      coin.className = "coin";
+
+      coin.style.setProperty(
+        "--coin-color",
+        coinTypes[coinData.level].color
+      );
+
+      // Show the number only on the exposed top coin.
+      if (idx === column.length - 1) {
+        coin.classList.add("coin-top");
+        coin.textContent = coinTypes[coinData.level].label;
+      }
+
+      if (coinData.bundleId !== null) {
+        coin.classList.add("bound");
+        coin.title = "Tied coins — move together";
+      }
+
+      columnEl.appendChild(coin);
+    });
+
+    columnEl.onclick = () => handleColumnClick(i);
   });
 }
+
+
+/* ---------- SELECT AND MOVE ---------- */
 
 function handleColumnClick(index) {
   if (gameOver) return;
 
-  // No selection yet → select if column has coins
   if (selectedCol === null) {
     if (board[index].length) {
       selectedCol = index;
@@ -1246,14 +1396,12 @@ function handleColumnClick(index) {
     return;
   }
 
-  // Same column → deselect
   if (selectedCol === index) {
     selectedCol = null;
     renderBoard();
     return;
   }
 
-  // Try move
   moveCoin(selectedCol, index);
   selectedCol = null;
   renderBoard();
@@ -1263,31 +1411,59 @@ function handleColumnClick(index) {
 /* ---------- DEAL ---------- */
 
 function randomDealLevel() {
-  const r = Math.random();
-
-  if (r < 0.20) return 0;
-  if (r < 0.40) return 1;
-  if (r < 0.60) return 2;
-  if (r < 0.75) return 3;
-  if (r < 0.85) return 4;
-  if (r < 0.93) return 5;
-  if (r < 0.98) return 6;
-  return 7;
+  return Math.floor(Math.random() * coinTypes.length);
 }
-
 
 function dealCoin() {
   if (gameOver) return;
 
+  selectedCol = null;
+
   for (let i = 0; i < COIN_COLS; i++) {
-    // Dynamic batch size for this column (2–5 coins)
-    const batchSize = 3 + Math.floor(Math.random() * 4); // 3–6
+    const column = board[i];
+    const remaining = COLUMN_HEIGHT - column.length;
+
+    if (remaining <= 0) continue;
+
+    // Deal between 3 and 5 coins of the same number.
+    // If there is less room left, only deal what fits.
+    const batchSize = Math.min(
+      3 + Math.floor(Math.random() * 3),
+      remaining
+    );
+
+    const level = randomDealLevel();
+
+    let bundleStart = -1;
+    let bundleSize = 0;
+    let bundleId = null;
+
+    // Occasionally tie 2 or 3 coins together.
+    if (batchSize >= 2 && Math.random() < 0.28) {
+      bundleSize = Math.min(
+        batchSize,
+        2 + Math.floor(Math.random() * 2)
+      );
+
+      bundleStart = Math.floor(
+        Math.random() * (batchSize - bundleSize + 1)
+      );
+
+      bundleId = nextBundleId++;
+    }
 
     for (let b = 0; b < batchSize; b++) {
-      if (board[i].length < COLUMN_HEIGHT) {
-        const level = randomDealLevel();
-        board[i].push(level);
-      }
+      const isBundled =
+        bundleId !== null &&
+        b >= bundleStart &&
+        b < bundleStart + bundleSize;
+
+      column.push(
+        makeCoin(
+          level,
+          isBundled ? bundleId : null
+        )
+      );
     }
   }
 
@@ -1298,100 +1474,150 @@ function dealCoin() {
 
 /* ---------- MERGE ---------- */
 
+/* Merge a complete column of 12 matching coins
+   into one coin of the next number. */
+
+function tryMergeColumn(index) {
+  const column = board[index];
+
+  if (column.length !== COLUMN_HEIGHT) return false;
+
+  const level = column[0].level;
+
+  if (level >= MAX_LEVEL) return false;
+
+  const allMatch = column.every(
+    coin => coin.level === level
+  );
+
+  if (!allMatch) return false;
+
+  board[index] = [makeCoin(level + 1)];
+
+  return true;
+}
+
 function mergeColumns() {
   if (gameOver) return;
 
   let merged = false;
 
   for (let i = 0; i < COIN_COLS; i++) {
-    const col = board[i];
-
-    if (col.length !== COLUMN_HEIGHT) continue;
-
-    const base = col[0];
-    const same = col.every(v => v === base);
-
-    if (same && base < MAX_LEVEL) {
-      board[i] = [base + 1];
+    if (tryMergeColumn(i)) {
       merged = true;
     }
   }
 
   if (!merged) {
- showToast("No valid merges yet 💭");;
+    showToast("No valid merges yet 💭");
   }
 
   renderBoard();
 }
 
+
+/* ---------- MOVE THE COINS ---------- */
+
 function moveCoin(from, to) {
-  if (!board[from].length) return;
+  if (from === to || !board[from].length) return;
 
   const fromCol = board[from];
   const toCol = board[to];
 
-  const value = fromCol[fromCol.length - 1];
+  const group = getMovableGroup(fromCol);
 
-  // Target must be empty or match
-  if (toCol.length && toCol[toCol.length - 1] !== value) {
+  if (!group.length) return;
+
+  const topCoin = fromCol[fromCol.length - 1];
+  const value = topCoin.level;
+
+  // A destination must be empty or have the same number
+  // exposed on its top coin.
+  if (
+    toCol.length &&
+    toCol[toCol.length - 1].level !== value
+  ) {
     showToast("Coins must match 🔁");
     return;
   }
 
-  // Count how many matching coins are on top of source
-  let sourceRun = 0;
-  for (let i = fromCol.length - 1; i >= 0; i--) {
-    if (fromCol[i] === value) sourceRun++;
-    else break;
-  }
-
   const freeSpace = COLUMN_HEIGHT - toCol.length;
+
   if (freeSpace <= 0) {
     showToast("That column is full 🧱");
     return;
   }
 
-  // Move only what fits
-  const moveCount = Math.min(sourceRun, freeSpace);
+  const isBound = topCoin.bundleId !== null;
 
-  for (let i = 0; i < moveCount; i++) {
-    toCol.push(value);
-    fromCol.pop();
+  let moveCount;
+
+  if (isBound) {
+    // A bound group is all-or-nothing.
+    if (group.length > freeSpace) {
+      showToast(
+        "Those coins are tied together and won't fit 🪢"
+      );
+      return;
+    }
+
+    moveCount = group.length;
+  } else {
+    // Untied coins can move partially if necessary.
+    moveCount = Math.min(group.length, freeSpace);
   }
 
-  // Optional: auto-merge if filled
-  if (
-    toCol.length === COLUMN_HEIGHT &&
-    toCol.every(v => v === value) &&
-    value < MAX_LEVEL
-  ) {
-    mergeColumn(to);
-  }
+  // Remove coins from the top and preserve their order.
+  const movedCoins = fromCol.splice(
+    fromCol.length - moveCount,
+    moveCount
+  );
+
+  // Place them neatly on top of the destination stack.
+  toCol.push(...movedCoins);
+
+  // Automatically merge a completed matching column.
+  tryMergeColumn(to);
+
+  checkLoss();
 }
 
 
 /* ---------- LOSS ---------- */
 
 function checkLoss() {
-  const full = board.every(col => col.length >= COLUMN_HEIGHT);
-  if (!full) return;
+  const full = board.every(
+    column => column.length >= COLUMN_HEIGHT
+  );
+
+  if (!full || gameOver) return;
 
   gameOver = true;
- showToast("💥 Game Over! Board is full 💥");
+  showToast("💥 Game Over! Board is full 💥");
 }
+
 
 /* ---------- RESTART ---------- */
 
 function restartCoinGame() {
-  board = Array.from({ length: COIN_COLS }, () => []);
+  board = Array.from(
+    { length: COIN_COLS },
+    () => []
+  );
+
+  selectedCol = null;
   gameOver = false;
+  nextBundleId = 1;
+
   renderBoard();
 }
+
 
 /* ---------- START ---------- */
 
 createBoard();
 renderBoard();
+
 
 
 
