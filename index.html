@@ -415,47 +415,40 @@ h3 {
 
 /* Each coin looks like a flattened cylinder.
    The negative margin makes the coins stack. */
+
 .coin {
-  --coin-color: #35a9bd;
+  --coin-color: #35b9c8;
 
   position: relative;
   box-sizing: border-box;
-  flex: 0 0 26px;
-  width: 84%;
-  max-width: 105px;
-  height: 26px;
-  margin-top: -14px;
+  flex: 0 0 32px;
+  width: 70%;
+  max-width: 88px;
+  height: 32px;
+  margin-top: -19px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
   border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.38);
+  border: 2px solid rgba(0, 0, 0, 0.14);
 
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.85) 0%,
-    var(--coin-color) 30%,
-    var(--coin-color) 65%,
-    rgba(0, 0, 0, 0.22) 100%
-  );
+  /* Solid colour, without the glossy gradient */
+  background: var(--coin-color);
 
-  box-shadow:
-    inset 0 2px 0 rgba(255, 255, 255, 0.5),
-    inset 0 -3px 0 rgba(0, 0, 0, 0.12),
-    0 2px 2px rgba(0, 0, 0, 0.12);
+  /* A subtle dark edge gives the stack some thickness */
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.17);
 
   font-family: "Fredoka", sans-serif;
   font-size: 16px;
   font-weight: 700;
   color: white;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 
   transition: transform 0.2s ease;
 }
 
-/* Only the exposed top coin displays its number */
 .coin:not(.coin-top) {
   color: transparent;
   text-shadow: none;
@@ -465,7 +458,7 @@ h3 {
   z-index: 2;
 }
 
-/* A rope/rubber-band appearance for bound coins */
+/* Rope or rubber band around tied coins */
 .coin.bound::after {
   content: "";
   position: absolute;
@@ -484,7 +477,7 @@ h3 {
     #96652f 3px 5px
   );
 
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   transform: rotate(-8deg);
   pointer-events: none;
 }
@@ -510,13 +503,16 @@ h3 {
     border-radius: 12px;
   }
 
-  .coin {
-    width: 88%;
-    height: 24px;
-    flex-basis: 24px;
-    margin-top: -12px;
-    font-size: 13px;
-  }
+.coin {
+  width: 75%;
+  height: 28px;
+  flex-basis: 28px;
+  margin-top: -16px;
+  font-size: 13px;
+}
+
+.coin-column {
+  height: 180px;
 }
 
 .coin.selected {
@@ -1414,6 +1410,7 @@ function randomDealLevel() {
   return Math.floor(Math.random() * coinTypes.length);
 }
 
+
 function dealCoin() {
   if (gameOver) return;
 
@@ -1421,49 +1418,67 @@ function dealCoin() {
 
   for (let i = 0; i < COIN_COLS; i++) {
     const column = board[i];
-    const remaining = COLUMN_HEIGHT - column.length;
 
-    if (remaining <= 0) continue;
+    // Add two separate batches per column.
+    // Each batch contains 3–5 coins of one number.
+    let previousLevel = column.length
+      ? column[column.length - 1].level
+      : null;
 
-    // Deal between 3 and 5 coins of the same number.
-    // If there is less room left, only deal what fits.
-    const batchSize = Math.min(
-      3 + Math.floor(Math.random() * 3),
-      remaining
-    );
+    for (let batch = 0; batch < 2; batch++) {
+      const remaining = COLUMN_HEIGHT - column.length;
 
-    const level = randomDealLevel();
+      if (remaining <= 0) break;
 
-    let bundleStart = -1;
-    let bundleSize = 0;
-    let bundleId = null;
-
-    // Occasionally tie 2 or 3 coins together.
-    if (batchSize >= 2 && Math.random() < 0.28) {
-      bundleSize = Math.min(
-        batchSize,
-        2 + Math.floor(Math.random() * 2)
+      const batchSize = Math.min(
+        3 + Math.floor(Math.random() * 3),
+        remaining
       );
 
-      bundleStart = Math.floor(
-        Math.random() * (batchSize - bundleSize + 1)
-      );
+      // Pick a number different from the previous batch.
+      let level = randomDealLevel();
 
-      bundleId = nextBundleId++;
-    }
+      if (level === previousLevel) {
+        level = (
+          level +
+          1 +
+          Math.floor(Math.random() * (coinTypes.length - 1))
+        ) % coinTypes.length;
+      }
 
-    for (let b = 0; b < batchSize; b++) {
-      const isBundled =
-        bundleId !== null &&
-        b >= bundleStart &&
-        b < bundleStart + bundleSize;
+      // Occasionally bind 2–3 coins together.
+      let bundleId = null;
+      let bundleSize = 0;
+      let bundleStart = -1;
 
-      column.push(
-        makeCoin(
-          level,
-          isBundled ? bundleId : null
-        )
-      );
+      if (batchSize >= 2 && Math.random() < 0.25) {
+        bundleSize = Math.min(
+          batchSize,
+          2 + Math.floor(Math.random() * 2)
+        );
+
+        bundleStart = Math.floor(
+          Math.random() * (batchSize - bundleSize + 1)
+        );
+
+        bundleId = nextBundleId++;
+      }
+
+      for (let b = 0; b < batchSize; b++) {
+        const isBundled =
+          bundleId !== null &&
+          b >= bundleStart &&
+          b < bundleStart + bundleSize;
+
+        column.push(
+          makeCoin(
+            level,
+            isBundled ? bundleId : null
+          )
+        );
+      }
+
+      previousLevel = level;
     }
   }
 
@@ -1575,9 +1590,6 @@ function moveCoin(from, to) {
 
   // Place them neatly on top of the destination stack.
   toCol.push(...movedCoins);
-
-  // Automatically merge a completed matching column.
-  tryMergeColumn(to);
 
   checkLoss();
 }
