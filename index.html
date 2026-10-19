@@ -416,29 +416,28 @@ h3 {
 /* Each coin looks like a flattened cylinder.
    The negative margin makes the coins stack. */
 
+
 .coin {
   --coin-color: #35b9c8;
 
   position: relative;
   box-sizing: border-box;
-  flex: 0 0 32px;
-  width: 70%;
-  max-width: 88px;
-  height: 32px;
-  margin-top: -19px;
+  flex: 0 0 34px;
+  width: 58%;
+  max-width: 76px;
+  height: 34px;
+  margin-top: -21px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
   border-radius: 50%;
-  border: 2px solid rgba(0, 0, 0, 0.14);
-
-  /* Solid colour, without the glossy gradient */
+  border: 2px solid rgba(0, 0, 0, 0.18);
   background: var(--coin-color);
 
-  /* A subtle dark edge gives the stack some thickness */
-  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.17);
+  /* Solid, slightly thicker coin edges */
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.2);
 
   font-family: "Fredoka", sans-serif;
   font-size: 16px;
@@ -457,6 +456,11 @@ h3 {
 .coin-top {
   z-index: 2;
 }
+
+.coin.selected {
+  transform: scale(1.05);
+}
+
 
 /* Rope or rubber band around tied coins */
 .coin.bound::after {
@@ -494,22 +498,26 @@ h3 {
 }
 
 @media (max-width: 600px) {
+
+@media (max-width: 600px) {
   #coin-board {
     gap: 7px;
   }
 
   .coin-column {
-    height: 170px;
+    height: 180px;
     border-radius: 12px;
   }
 
-.coin {
-  width: 75%;
-  height: 28px;
-  flex-basis: 28px;
-  margin-top: -16px;
-  font-size: 13px;
+  .coin {
+    width: 62%;
+    height: 30px;
+    flex-basis: 30px;
+    margin-top: -18px;
+    font-size: 13px;
+  }
 }
+
 
 .coin-column {
   height: 180px;
@@ -1189,13 +1197,13 @@ startBreathingCycle();
 
 const COIN_COLS = 10;
 const COLUMN_HEIGHT = 12;
-const MAX_LEVEL = 7;
+const MAX_LEVEL = 99;
 
 let selectedCol = null;
 let gameOver = false;
 let nextBundleId = 1;
 
-/* Different colours for each coin number */
+
 const coinTypes = [
   { color: "#35b9c8", label: "1" },
   { color: "#e96c63", label: "2" },
@@ -1206,6 +1214,21 @@ const coinTypes = [
   { color: "#df58b5", label: "7" },
   { color: "#f28a4a", label: "8" }
 ];
+
+function getCoinType(level) {
+  if (level < coinTypes.length) {
+    return coinTypes[level];
+  }
+
+  // Cycle through colours for higher-level coins.
+  const hue = (level * 47) % 360;
+
+  return {
+    color: `hsl(${hue}, 65%, 55%)`,
+    label: String(level + 1)
+  };
+}
+
 
 /* Each coin stores its number and optional bundle ID.
    Coins sharing a bundle ID are tied together. */
@@ -1355,15 +1378,14 @@ function renderBoard() {
       const coin = document.createElement("div");
       coin.className = "coin";
 
-      coin.style.setProperty(
-        "--coin-color",
-        coinTypes[coinData.level].color
-      );
+      const type = getCoinType(coinData.level);
+
+coin.style.setProperty("--coin-color", type.color);
 
       // Show the number only on the exposed top coin.
       if (idx === column.length - 1) {
         coin.classList.add("coin-top");
-        coin.textContent = coinTypes[coinData.level].label;
+        coin.textContent = type.label;
       }
 
       if (coinData.bundleId !== null) {
@@ -1407,7 +1429,7 @@ function handleColumnClick(index) {
 /* ---------- DEAL ---------- */
 
 function randomDealLevel() {
-  return Math.floor(Math.random() * coinTypes.length);
+  return Math.floor(Math.random() * 4);
 }
 
 
@@ -1595,6 +1617,51 @@ function moveCoin(from, to) {
   checkLoss();
 }
 
+
+/* ---------- MERGE COLUMNS ---------- */
+
+function mergeColumns() {
+  if (gameOver) return;
+
+  let mergedCount = 0;
+
+  for (let i = 0; i < COIN_COLS; i++) {
+    const column = board[i];
+
+    // A column must be full and contain matching coins.
+    if (column.length !== COLUMN_HEIGHT) continue;
+
+    const level = column[0].level;
+
+    if (level >= MAX_LEVEL) continue;
+
+    const allMatch = column.every(
+      coin => coin.level === level
+    );
+
+    if (!allMatch) continue;
+
+    // Replace the entire stack with one coin of the next level.
+    board[i] = [
+      makeCoin(level + 1)
+    ];
+
+    mergedCount++;
+  }
+
+  selectedCol = null;
+
+  if (mergedCount > 0) {
+    showToast(
+      `✨ Merged ${mergedCount} column${mergedCount === 1 ? "" : "s"}!`
+    );
+  } else {
+    showToast("Fill a column with 12 matching coins to merge 🪙");
+  }
+
+  checkLoss();
+  renderBoard();
+}
 
 /* ---------- LOSS ---------- */
 
