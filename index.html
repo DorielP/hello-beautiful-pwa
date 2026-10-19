@@ -1411,6 +1411,8 @@ function randomDealLevel() {
 }
 
 
+
+
 function dealCoin() {
   if (gameOver) return;
 
@@ -1418,53 +1420,61 @@ function dealCoin() {
 
   for (let i = 0; i < COIN_COLS; i++) {
     const column = board[i];
+    const startingLength = column.length;
+    const freeSpace = COLUMN_HEIGHT - startingLength;
 
-    // Add two separate batches per column.
-    // Each batch contains 3–5 coins of one number.
-    let previousLevel = column.length
+    // Skip columns that are already full.
+    if (freeSpace <= 0) continue;
+
+    let previousLevel = startingLength
       ? column[column.length - 1].level
       : null;
 
-    for (let batch = 0; batch < 2; batch++) {
-      const remaining = COLUMN_HEIGHT - column.length;
-
-      if (remaining <= 0) break;
-
-      const batchSize = Math.min(
-        3 + Math.floor(Math.random() * 3),
-        remaining
-      );
-
-      // Pick a number different from the previous batch.
+    // Choose a different number from the previous batch.
+    function chooseLevel() {
       let level = randomDealLevel();
 
       if (level === previousLevel) {
         level = (
-          level +
-          1 +
+          level + 1 +
           Math.floor(Math.random() * (coinTypes.length - 1))
         ) % coinTypes.length;
       }
+
+      previousLevel = level;
+      return level;
+    }
+
+    // Deal one batch of a single number.
+    function addBatch(requestedSize) {
+      const size = Math.min(
+        requestedSize,
+        COLUMN_HEIGHT - column.length
+      );
+
+      if (size <= 0) return;
+
+      const level = chooseLevel();
 
       // Occasionally bind 2–3 coins together.
       let bundleId = null;
       let bundleSize = 0;
       let bundleStart = -1;
 
-      if (batchSize >= 2 && Math.random() < 0.25) {
+      if (size >= 2 && Math.random() < 0.20) {
         bundleSize = Math.min(
-          batchSize,
+          size,
           2 + Math.floor(Math.random() * 2)
         );
 
         bundleStart = Math.floor(
-          Math.random() * (batchSize - bundleSize + 1)
+          Math.random() * (size - bundleSize + 1)
         );
 
         bundleId = nextBundleId++;
       }
 
-      for (let b = 0; b < batchSize; b++) {
+      for (let b = 0; b < size; b++) {
         const isBundled =
           bundleId !== null &&
           b >= bundleStart &&
@@ -1477,8 +1487,41 @@ function dealCoin() {
           )
         );
       }
+    }
 
-      previousLevel = level;
+    // Deal size depends on how much room remains.
+    let batchSize;
+
+    if (freeSpace >= 9) {
+      // Plenty of room: a normal batch of 3–4.
+      batchSize = 3 + Math.floor(Math.random() * 2);
+    } else if (freeSpace >= 6) {
+      // Partly filled: a smaller batch of 2–3.
+      batchSize = 2 + Math.floor(Math.random() * 2);
+    } else if (freeSpace >= 3) {
+      // Getting full: just 2 coins.
+      batchSize = 2;
+    } else {
+      // Almost full: use only the remaining space.
+      batchSize = freeSpace;
+    }
+
+    addBatch(batchSize);
+
+    // Only occasionally deal a second batch, and only
+    // when the column started nearly empty and there's
+    // still plenty of space.
+    const remainingSpace = COLUMN_HEIGHT - column.length;
+
+    if (
+      startingLength <= 2 &&
+      remainingSpace >= 4 &&
+      Math.random() < 0.18
+    ) {
+      const secondBatchSize =
+        2 + Math.floor(Math.random() * 2);
+
+      addBatch(secondBatchSize);
     }
   }
 
@@ -1487,48 +1530,6 @@ function dealCoin() {
 }
 
 
-/* ---------- MERGE ---------- */
-
-/* Merge a complete column of 12 matching coins
-   into one coin of the next number. */
-
-function tryMergeColumn(index) {
-  const column = board[index];
-
-  if (column.length !== COLUMN_HEIGHT) return false;
-
-  const level = column[0].level;
-
-  if (level >= MAX_LEVEL) return false;
-
-  const allMatch = column.every(
-    coin => coin.level === level
-  );
-
-  if (!allMatch) return false;
-
-  board[index] = [makeCoin(level + 1)];
-
-  return true;
-}
-
-function mergeColumns() {
-  if (gameOver) return;
-
-  let merged = false;
-
-  for (let i = 0; i < COIN_COLS; i++) {
-    if (tryMergeColumn(i)) {
-      merged = true;
-    }
-  }
-
-  if (!merged) {
-    showToast("No valid merges yet 💭");
-  }
-
-  renderBoard();
-}
 
 
 /* ---------- MOVE THE COINS ---------- */
